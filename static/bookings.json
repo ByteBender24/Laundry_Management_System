@@ -592,5 +592,16 @@
         "total_cost": 90.0,
         "payment_status": true,
         "booking_time": "2023-12-27 00:23:21"
+    },
+    {
+        "booking_id": "DA1741",
+        "customer_id": "DAN615232",
+        "dry_quantity": 5,
+        "clothes_quantity": 6,
+        "shoes_quantity": 3,
+        "bags_quantity": 0,
+        "total_cost": 185.0,
+        "payment_status": true,
+        "booking_time": "2023-12-27 01:59:32"
     }
 ]

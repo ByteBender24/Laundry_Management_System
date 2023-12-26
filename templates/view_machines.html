@@ -41,11 +41,11 @@
     </nav>
     <div class="container mt-5">
         <h2 class="text-3xl font-bold mb-4">View Machines</h2>
-    <a href="{% url 'create_machine' %}"><button class="btn btn-secondary">Create Machine</button></a>
+        <a href="{% url 'create_machine' %}"><button class="btn btn-secondary"  style="margin-bottom: 10px;">Create Machine</button></a>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {% for machine in machines %}
-            <div class="bg-white p-4 rounded-md shadow-md">
+            <div class="p-4 rounded-md shadow-md {% if machine.is_used %}bg-pink-100{% else %}bg-white{% endif %}">
                 <h3 class="text-lg font-semibold mb-2">{{ machine.name }}</h3>
                 <p class="text-sm mb-2">Capacity: {{ machine.capacity }}</p>
                 <p class="text-sm">Status: {% if machine.is_used %}Occupied{% else %}Free{% endif %}</p>

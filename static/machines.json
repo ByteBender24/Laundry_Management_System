@@ -9,7 +9,7 @@
   {
     "name": "DM2",
     "capacity": 6,
-    "is_used": false,
+    "is_used": "DA1741",
     "machine_id": "DRY_CLEANING_MJZ",
     "type": "dry_cleaning"
   },

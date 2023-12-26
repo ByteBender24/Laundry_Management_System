@@ -223,8 +223,9 @@ def create_booking(request):
 
     booking_manager = BookingManager()
     bookings = booking_manager.get_bookings()
+    today = datetime.now().date().strftime('%d/%m/%Y')
 
-    context = {'price_data': price_data, 'free_machines': free_num_machines}
+    context = {'price_data': price_data, 'free_machines': free_num_machines, 'today' : today}
 
     if request.method == 'POST':
         # Extract data from form submission

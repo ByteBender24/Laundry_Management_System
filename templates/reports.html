@@ -17,10 +17,14 @@
             padding: 0;
         }
 
+        p {
+            color: white;
+        }
+
         .container {
             max-width: 800px;
             margin: 50px auto;
-            background-color: #555;
+            background-color: #333;
             /* Darker background color */
             padding: 20px;
             border-radius: 10px;
@@ -56,18 +60,22 @@
         }
 
         .dark-mode button:hover {
-            background-color: #555;
+            background-color: #333;
         }
 
         /* Card Flipping Styles */
         .card-container {
             display: flex;
             justify-content: center;
+            align-items: center;
+            background-color: #333;
+            height: 100vh;
         }
 
         .card {
-            width: 200px;
-            height: 300px;
+            width: 300px;
+            /* Adjust the width as needed */
+            height: 400px;
             perspective: 1000px;
             margin: 0 10px;
             cursor: pointer;
@@ -108,29 +116,70 @@
             transform: rotateY(180deg);
         }
 
+        /* Additional styling for buttons */
+        .btn-success,
+        .btn-secondary {
+            margin-top: 10px;
+        }
+
+        .card-face.front {
+            transform: rotateY(0deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .report-header,
+        label,
+        input,
+        button {
+            margin: 10px 0;
+        }
+
+        input {
+            width: 100px;
+        }
+
         .one-front {
-    background: linear-gradient(-45deg, #f403d1, #64b5f6);
-}
+            background: linear-gradient(-45deg, #f403d1, #457398);
+        }
 
-.two-front {
-    background: linear-gradient(-45deg, #f321d7, #ffec61);
-}
+        .two-front {
+            background: linear-gradient(-45deg, #f321d7, #aca466);
+        }
 
-.three-front {
-    background: linear-gradient(-45deg, #24ff72, #9a4eff);
-}
+        .three-front {
+            background: linear-gradient(-45deg, #568767, #9a4eff);
+        }
 
-.one-back {
-    background: linear-gradient(-45deg, #64b5f6, #f403d1);
-}
+        .one-back {
+            background: linear-gradient(-45deg, #64b5f6, #f403d1);
+        }
 
-.two-back {
-    background: linear-gradient(-45deg, #ffec61, #f321d7);
-}
+        .two-back {
+            background: linear-gradient(-45deg, #ffec61, #f321d7);
+        }
 
-.three-back {
-    background: linear-gradient(-45deg, #9a4eff, #24ff72);
-}
+        .three-back {
+            background: linear-gradient(-45deg, #9a4eff, #24ff72);
+        }
+
+        p {
+            color: #fff;
+        }
+
+        .report-header {
+            color : #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .no-data {
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -164,8 +213,8 @@
     </nav>
 
     <div class="container">
-        <div class="card-container">
-            <div class="card" id="yearlyCard">
+        <div class="card-container" style="background-color: #333;">
+            <div class="card bg-light" id="yearlyCard">
                 <div class="card-inner">
                     <div class="card-face front one-front">
                         <div class="report-header">Yearly Report</div>
@@ -181,7 +230,7 @@
                     <div class="card-face back one-back">
                         {% if report_data.year %}
                         <div class="report-info">
-                            <p>Year: {{ report_data.year }}</p>
+                            <p>Year: {{ report_data.year }}</p><br><br>
                         </div>
                         <div class="report-data">
                             <p>Total Bookings: {{ report_data.num_bookings }}</p>
@@ -197,7 +246,7 @@
                 </div>
             </div>
 
-            <div class="card" id="dailyCard">
+            <div class="card bg-light" id="dailyCard">
                 <div class="card-inner">
                     <div class="card-face front two-front">
                         <div class="report-header">Daily Report</div>
@@ -218,6 +267,7 @@
                             <p>Start Date: {{ report_data.start_date }}</p>
                             <p>End Date: {{ report_data.end_date }}</p>
                         </div>
+                        <br><br>
                         <div class="report-data">
                             <p>Total Bookings: {{ report_data.num_bookings }}</p>
                             <p>Total Cost: {{ report_data.total_revenue }}</p>
@@ -232,7 +282,7 @@
                 </div>
             </div>
 
-            <div class="card" id="monthlyCard">
+            <div class="card bg-light" id="monthlyCard">
                 <div class="card-inner">
                     <div class="card-face front three-front">
                         <div class="report-header">Monthly Report</div>
@@ -251,6 +301,7 @@
                         <div class="report-info">
                             <p>Month: {{ report_data.month }}</p>
                         </div>
+                        <br><br>
                         <div class="report-data">
                             <p>Total Bookings: {{ report_data.num_bookings }}</p>
                             <p>Total Cost: {{ report_data.total_revenue }}</p>
@@ -272,9 +323,9 @@
 
     <script>
         function flipCard(cardId) {
-        var card = document.getElementById(cardId);
-        card.classList.toggle('flipped');
-    }
+            var card = document.getElementById(cardId);
+            card.classList.toggle('flipped');
+        }
     </script>
 </body>
 

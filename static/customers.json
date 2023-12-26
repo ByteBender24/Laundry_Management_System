@@ -40,5 +40,12 @@
     "phone_number": "9239029201",
     "email": "anish@gmail.com",
     "status": "PREMIUM"
+  },
+  {
+    "id": "DAN615232",
+    "name": "Danush",
+    "phone_number": "9944188232",
+    "email": "danushg@gmail.com",
+    "status": "BASIC"
   }
 ]

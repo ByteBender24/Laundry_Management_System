@@ -1,0 +1,156 @@
+[
+  {
+    "booking_id": "B1",
+    "customer_id": "C1",
+    "dry_quantity": 5,
+    "clothes_quantity": 2,
+    "shoes_quantity": 3,
+    "bags_quantity": 4,
+    "total_cost": 100,
+    "payment_status": true,
+    "booking_time": "2023-12-25 12:30:00"
+  },
+  {
+    "booking_id": "B2",
+    "customer_id": "C2",
+    "dry_quantity": 3,
+    "clothes_quantity": 1,
+    "shoes_quantity": 2,
+    "bags_quantity": 2,
+    "total_cost": 50,
+    "payment_status": false,
+    "booking_time": "2023-12-26 14:45:00"
+  },
+  {
+    "booking_id": "B3",
+    "customer_id": "C3",
+    "dry_quantity": 8,
+    "clothes_quantity": 4,
+    "shoes_quantity": 5,
+    "bags_quantity": 7,
+    "total_cost": 150,
+    "payment_status": true,
+    "booking_time": "2023-12-27 09:20:10"
+  },
+  {
+    "booking_id": "B4",
+    "customer_id": "C4",
+    "dry_quantity": 10,
+    "clothes_quantity": 5,
+    "shoes_quantity": 8,
+    "bags_quantity": 10,
+    "total_cost": 200,
+    "payment_status": true,
+    "booking_time": "2023-12-28 16:30:45"
+  },
+  {
+    "booking_id": "B5",
+    "customer_id": "C5",
+    "dry_quantity": 12,
+    "clothes_quantity": 6,
+    "shoes_quantity": 9,
+    "bags_quantity": 12,
+    "total_cost": 250,
+    "payment_status": false,
+    "booking_time": "2023-12-29 12:15:30"
+  },
+  {
+    "booking_id": "B6",
+    "customer_id": "C6",
+    "dry_quantity": 6,
+    "clothes_quantity": 3,
+    "shoes_quantity": 4,
+    "bags_quantity": 6,
+    "total_cost": 120,
+    "payment_status": true,
+    "booking_time": "2023-12-30 08:45:00"
+  },
+  {
+    "booking_id": "B7",
+    "customer_id": "C7",
+    "dry_quantity": 15,
+    "clothes_quantity": 7,
+    "shoes_quantity": 10,
+    "bags_quantity": 15,
+    "total_cost": 320,
+    "payment_status": false,
+    "booking_time": "2023-12-31 16:00:15"
+  },
+  {
+    "booking_id": "B32",
+    "customer_id": "C32",
+    "dry_quantity": 8,
+    "clothes_quantity": 4,
+    "shoes_quantity": 5,
+    "bags_quantity": 7,
+    "total_cost": 150,
+    "payment_status": true,
+    "booking_time": "2023-12-29 09:20:10"
+  },
+  {
+    "booking_id": "B33",
+    "customer_id": "C33",
+    "dry_quantity": 10,
+    "clothes_quantity": 5,
+    "shoes_quantity": 8,
+    "bags_quantity": 10,
+    "total_cost": 200,
+    "payment_status": true,
+    "booking_time": "2023-12-30 16:30:45"
+  },
+  {
+    "booking_id": "B34",
+    "customer_id": "C34",
+    "dry_quantity": 12,
+    "clothes_quantity": 6,
+    "shoes_quantity": 9,
+    "bags_quantity": 12,
+    "total_cost": 250,
+    "payment_status": false,
+    "booking_time": "2023-12-31 12:15:30"
+  },
+  {
+    "booking_id": "HA7551",
+    "customer_id": "HAR402902",
+    "dry_quantity": 7,
+    "clothes_quantity": 5,
+    "shoes_quantity": 4,
+    "bags_quantity": 6,
+    "total_cost": 176.4,
+    "payment_status": true,
+    "booking_time": "2023-12-26 21:23:01"
+  },
+  {
+    "booking_id": "AN8709",
+    "customer_id": "ANI395201",
+    "dry_quantity": 5,
+    "clothes_quantity": 4,
+    "shoes_quantity": 3,
+    "bags_quantity": 3,
+    "total_cost": 133.20000000000002,
+    "payment_status": true,
+    "booking_time": "2023-12-27 00:16:11"
+  },
+  {
+    "booking_id": "AN9931",
+    "customer_id": "ANI395201",
+    "dry_quantity": 4,
+    "clothes_quantity": 5,
+    "shoes_quantity": 3,
+    "bags_quantity": 3,
+    "total_cost": 142.20000000000002,
+    "payment_status": true,
+    "booking_time": "2023-12-27 00:17:56"
+  },
+  {
+    "booking_id": "AN6099",
+    "customer_id": "ANI395201",
+    "dry_quantity": 10,
+    "clothes_quantity": 0,
+    "shoes_quantity": 0,
+    "bags_quantity": 0,
+    "total_cost": 90.0,
+    "payment_status": true,
+    "booking_time": "2023-12-27 00:23:21"
+  }
+]

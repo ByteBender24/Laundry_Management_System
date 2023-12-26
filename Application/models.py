@@ -646,10 +646,10 @@ class DailyReport(ReportStrategy):
             booking['booking_time'], '%Y-%m-%d %H:%M:%S') <= end_date]
 
         # Calculate total revenue
-        total_revenue = sum(booking['total_cost'] for booking in filtered_data)
+        total_revenue = round(sum(booking['total_cost'] for booking in filtered_data))
 
         # Calculate average cost per booking
-        average_cost = total_revenue / len(filtered_data) if len(filtered_data) > 0 else 0
+        average_cost = round(total_revenue / len(filtered_data) if len(filtered_data) > 0 else 0)
 
         # Number of bookings
         num_bookings = len(filtered_data)
@@ -682,11 +682,11 @@ class MonthlyReport(ReportStrategy):
             datetime.strptime(entry['booking_time'], "%Y-%m-%d %H:%M:%S").month == month]
 
         # Calculate total revenue
-        total_revenue = sum(booking['total_cost'] for booking in filtered_data)
+        total_revenue = round (sum(booking['total_cost'] for booking in filtered_data))
 
         # Calculate average cost per booking
-        average_cost = total_revenue / \
-            len(filtered_data) if len(filtered_data) > 0 else 0
+        average_cost = round (total_revenue / \
+            len(filtered_data) if len(filtered_data) > 0 else 0)
 
         # Number of bookings
         num_bookings = len(filtered_data)
@@ -715,11 +715,11 @@ class YearlyReport(ReportStrategy):
             entry['booking_time'], "%Y-%m-%d %H:%M:%S").year == year]
 
         # Calculate total revenue
-        total_revenue = sum(booking['total_cost'] for booking in filtered_data)
+        total_revenue = round(sum(booking['total_cost'] for booking in filtered_data))
 
         # Calculate average cost per booking
-        average_cost = total_revenue / \
-            len(filtered_data) if len(filtered_data) > 0 else 0
+        average_cost = round(total_revenue / \
+            len(filtered_data) if len(filtered_data) > 0 else 0)
 
         # Number of bookings
         num_bookings = len(filtered_data)
