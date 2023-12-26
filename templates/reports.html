@@ -1,16 +1,18 @@
-<!-- templates/reports.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <title>Reports</title>
     <style>
         body {
             font-family: "Arial", sans-serif;
-            background-color: #f4f4f4;
+            background-color: #333;
+            /* Dark background color */
+            color: #fff;
+            /* Light text color */
             margin: 0;
             padding: 0;
         }
@@ -18,7 +20,8 @@
         .container {
             max-width: 800px;
             margin: 50px auto;
-            background-color: #fff;
+            background-color: #555;
+            /* Darker background color */
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -31,20 +34,15 @@
         .report-header {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #333;
+            color: #ccc;
+            /* Lighter text color */
             margin-bottom: 10px;
         }
 
-        .report-info {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
+        .report-info,
         .report-data {
-            font-size: 1.2rem;
-            color: #444;
-            margin-bottom: 10px;
+            color: #bbb;
+            /* Lighter text color */
         }
 
         .no-data {
@@ -52,20 +50,98 @@
             color: #888;
         }
 
-        /* Add your custom styles here */
-
-        canvas {
-            max-width: 100%;
+        .dark-mode button {
+            background-color: #333;
+            color: #fff;
         }
+
+        .dark-mode button:hover {
+            background-color: #555;
+        }
+
+        /* Card Flipping Styles */
+        .card-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            width: 200px;
+            height: 300px;
+            perspective: 1000px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #777;
+            /* Darker background color for the card */
+        }
+
+        .front {
+            transform: rotateY(0deg);
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        .one-front {
+    background: linear-gradient(-45deg, #f403d1, #64b5f6);
+}
+
+.two-front {
+    background: linear-gradient(-45deg, #f321d7, #ffec61);
+}
+
+.three-front {
+    background: linear-gradient(-45deg, #24ff72, #9a4eff);
+}
+
+.one-back {
+    background: linear-gradient(-45deg, #64b5f6, #f403d1);
+}
+
+.two-back {
+    background: linear-gradient(-45deg, #ffec61, #f321d7);
+}
+
+.three-back {
+    background: linear-gradient(-45deg, #9a4eff, #24ff72);
+}
     </style>
 </head>
-<body>
+
+<body class="dark-mode">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'dashboard' %}">Laundry Service</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -88,74 +164,118 @@
     </nav>
 
     <div class="container">
-        <div class="report-section">
-            <div class="report-header">Daily Report</div>
-            <form action="{% url 'generate_reports' %}" method="post">
-                {% csrf_token %}
-                <label for="dailyStartDate">Start Date:</label>
-                <input type="date" id="dailyStartDate" name="start_date" required>
-                <label for="dailyEndDate">End Date:</label>
-                <input type="date" id="dailyEndDate" name="end_date" required>
-                <button type="submit" class="btn btn-primary">Generate Report</button>
-            </form>
-            {% if daily_report %}
-                <div class="report-info">
-                    <p>Start Date: {{ daily_report.start_date }}</p>
-                    <p>End Date: {{ daily_report.end_date }}</p>
+        <div class="card-container">
+            <div class="card" id="yearlyCard">
+                <div class="card-inner">
+                    <div class="card-face front one-front">
+                        <div class="report-header">Yearly Report</div>
+                        <form action="{% url 'generate_reports' %}" method="post">
+                            {% csrf_token %}
+                            <label for="yearlyYear">Select Year:</label>
+                            <input type="number" id="yearlyYear" name="selected_year" min="2020" max="2023" required>
+                            <input type="hidden" name="report_type" value="yearly">
+                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                            <button type="button" class="btn btn-success" onclick="flipCard('yearlyCard')">View</button>
+                        </form>
+                    </div>
+                    <div class="card-face back one-back">
+                        {% if report_data.year %}
+                        <div class="report-info">
+                            <p>Year: {{ report_data.year }}</p>
+                        </div>
+                        <div class="report-data">
+                            <p>Total Bookings: {{ report_data.num_bookings }}</p>
+                            <p>Total Cost: {{ report_data.total_revenue }}</p>
+                            <p>Avg Cost per Booking: {{ report_data.average_cost }}</p>
+                            <p>Pending Bookings: {{ report_data.num_pending_bookings }}</p>
+                        </div>
+                        {% else %}
+                        <p class="no-data">No data available for the selected period.</p>
+                        {% endif %}
+                        <button type="button" class="btn btn-secondary" onclick="flipCard('yearlyCard')">Back</button>
+                    </div>
                 </div>
-                <div class="report-data">
-                    <p>Total Bookings: {{ daily_report.total_bookings }}</p>
-                    <p>Total Cost: {{ daily_report.total_cost }}</p>
-                </div>
-            {% else %}
-                <p class="no-data">No data available for the selected period.</p>
-            {% endif %}
-        </div>
+            </div>
 
-        <div class="report-section">
-            <div class="report-header">Monthly Report</div>
-            <form action="{% url 'generate_reports' %}" method="post">
-                {% csrf_token %}
-                <label for="monthlyDate">Select Month:</label>
-                <input type="month" id="monthlyDate" name="selected_month" required>
-                <button type="submit" class="btn btn-primary">Generate Report</button>
-            </form>
-            {% if monthly_report %}
-                <div class="report-info">
-                    <p>Month: {{ monthly_report.start_date }}</p>
+            <div class="card" id="dailyCard">
+                <div class="card-inner">
+                    <div class="card-face front two-front">
+                        <div class="report-header">Daily Report</div>
+                        <form action="{% url 'generate_reports' %}" method="post">
+                            {% csrf_token %}
+                            <label for="dailyStartDate">Start Date:</label>
+                            <input type="date" id="dailyStartDate" name="start_date" required>
+                            <label for="dailyEndDate">End Date:</label>
+                            <input type="date" id="dailyEndDate" name="end_date" required>
+                            <input type="hidden" name="report_type" value="daily">
+                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                            <button type="button" class="btn btn-success" onclick="flipCard('dailyCard')">View</button>
+                        </form>
+                    </div>
+                    <div class="card-face back two-back">
+                        {% if report_data.start_date %}
+                        <div class="report-info">
+                            <p>Start Date: {{ report_data.start_date }}</p>
+                            <p>End Date: {{ report_data.end_date }}</p>
+                        </div>
+                        <div class="report-data">
+                            <p>Total Bookings: {{ report_data.num_bookings }}</p>
+                            <p>Total Cost: {{ report_data.total_revenue }}</p>
+                            <p>Avg Cost per Booking: {{ report_data.average_cost }}</p>
+                            <p>Pending Bookings: {{ report_data.num_pending_bookings }}</p>
+                        </div>
+                        {% else %}
+                        <p class="no-data">No data available for the selected period.</p>
+                        {% endif %}
+                        <button type="button" class="btn btn-secondary" onclick="flipCard('dailyCard')">Back</button>
+                    </div>
                 </div>
-                <div class="report-data">
-                    <p>Total Bookings: {{ monthly_report.total_bookings }}</p>
-                    <p>Total Cost: {{ monthly_report.total_cost }}</p>
-                </div>
-            {% else %}
-                <p class="no-data">No data available for the selected period.</p>
-            {% endif %}
-        </div>
+            </div>
 
-        <div class="report-section">
-            <div class="report-header">Yearly Report</div>
-            <form action="{% url 'generate_reports' %}" method="post">
-                {% csrf_token %}
-                <label for="yearlyYear">Select Year:</label>
-                <input type="number" id="yearlyYear" name="selected_year" min="1900" max="2100" required>
-                <button type="submit" class="btn btn-primary">Generate Report</button>
-            </form>
-            {% if yearly_report %}
-                <div class="report-info">
-                    <p>Year: {{ yearly_report.start_date }}</p>
+            <div class="card" id="monthlyCard">
+                <div class="card-inner">
+                    <div class="card-face front three-front">
+                        <div class="report-header">Monthly Report</div>
+                        <form action="{% url 'generate_reports' %}" method="post">
+                            {% csrf_token %}
+                            <label for="monthlyDate">Select Month:</label>
+                            <input type="month" id="monthlyDate" name="selected_month" required>
+                            <input type="hidden" name="report_type" value="monthly">
+                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                            <button type="button" class="btn btn-success"
+                                onclick="flipCard('monthlyCard')">View</button>
+                        </form>
+                    </div>
+                    <div class="card-face back three-back">
+                        {% if report_data.month %}
+                        <div class="report-info">
+                            <p>Month: {{ report_data.month }}</p>
+                        </div>
+                        <div class="report-data">
+                            <p>Total Bookings: {{ report_data.num_bookings }}</p>
+                            <p>Total Cost: {{ report_data.total_revenue }}</p>
+                            <p>Avg Cost per Booking: {{ report_data.average_cost }}</p>
+                            <p>Pending Bookings: {{ report_data.num_pending_bookings }}</p>
+                        </div>
+                        {% else %}
+                        <p class="no-data">No data available for the selected period.</p>
+                        {% endif %}
+                        <button type="button" class="btn btn-secondary" onclick="flipCard('monthlyCard')">Back</button>
+                    </div>
                 </div>
-                <div class="report-data">
-                    <p>Total Bookings: {{ yearly_report.total_bookings }}</p>
-                    <p>Total Cost: {{ yearly_report.total_cost }}</p>
-                </div>
-            {% else %}
-                <p class="no-data">No data available for the selected period.</p>
-            {% endif %}
+            </div>
         </div>
     </div>
 
     <!-- Bootstrap JS and Popper.js for dropdowns (if needed) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function flipCard(cardId) {
+        var card = document.getElementById(cardId);
+        card.classList.toggle('flipped');
+    }
+    </script>
 </body>
+
 </html>

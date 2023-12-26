@@ -15,11 +15,18 @@ def login(request):
         if data.get('username') == username and data.get('password') == password:
             return render(request, 'home.html')
         message = "Incorrect Credentials!"
-        return render(request, 'login.html', {'message': message})
+        return render(request, 'login.html', {'messages': message})
 
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    with open(r'static\notifications.json', 'r') as f:
+        data = json.load(f)
+    print (data)
+    if data != []:
+        return render(request, 'dashboard.html', {'messages' : data})
+    else:
+        return render(request, 'dashboard.html')
+
 
 
 def about(request):
@@ -286,7 +293,7 @@ def view_bookings(request):
     machine_manager = MachineManager()
     print_colored(machine_manager.get_free_machines())
 
-
+    request.session['invoice_print'] = True
     return render(request, 'view_bookings.html', {'bookings': bookings})
 
 
@@ -350,7 +357,11 @@ def payment_portal(request, booking_id):
             "bags": booking["bags_quantity"] * price_list["bags"]
         }
         subtotal = sum(totals.values())
-        return render(request, 'payment_portal.html', {'booking': booking, 'customer' : booking_cust, 'price_list' : price_list, 'totals' : totals, 'subtotal':subtotal})
+        invoice_id = generate_invoice_id(booking_id, customer_id)
+        invoice_date = todate()
+
+        invoice_print = request.session.get('invoice_print')
+        return render(request, 'payment_portal.html', {'booking': booking, 'customer' : booking_cust, 'price_list' : price_list, 'totals' : totals, 'subtotal':subtotal, 'invoice_date' : invoice_date, 'invoice_number' : invoice_id, 'invoice_print' : invoice_print})
 
     elif request.method == "POST":
         # Extract data from the form submission
@@ -378,7 +389,7 @@ def payment_portal(request, booking_id):
             booking.confirm_payment()
 
         # Update the booking in the booking manager
-        booking_manager.update_booking(booking_id, booking)
+        booking_manager.update_booking(booking_id)
 
         return JsonResponse({'success': True, 'message': 'Payment processed successfully'})
 
@@ -444,40 +455,39 @@ def handle_payment(request, booking_id):
     # Return success response
     return JsonResponse({'success': True, 'message': 'Payment confirmed successfully'})
 
+def invoice_printer(request, booking_id):
+    request.session['invoice_print'] = False
+    booking_manager = BookingManager()
+    if request.method == "GET":
+        booking = booking_manager.get_booking_by_id(booking_id)
+        if not booking:
+            return JsonResponse({'success': False, 'message': 'Booking not found'})
+        customer_id = booking['customer_id']
+        with open('static\pricelist.json', 'r') as file:
+            price_list = json.load(file)
+        price_list = price_list["price_rates"]
+        with open('static\customers.json', 'r') as file:
+            customers = json.load(file)
+        for cust in customers:
+            print(cust['id'], customer_id)
+            if cust['id'] == customer_id:
+                booking_cust = cust
+
+        totals = {
+            "dry_cleaning": booking["dry_quantity"] * price_list["dry_cleaning"],
+            "clothes": booking["clothes_quantity"] * price_list["clothes"],
+            "shoes": booking["shoes_quantity"] * price_list["shoes"],
+            "bags": booking["bags_quantity"] * price_list["bags"]
+        }
+        subtotal = sum(totals.values())
+        invoice_id = generate_invoice_id(booking_id, customer_id)
+        invoice_date = todate()
+
+        invoice_print = request.session.get('invoice_print')
+        return render(request, 'payment_portal.html', {'booking': booking, 'customer': booking_cust, 'price_list': price_list, 'totals': totals, 'subtotal': subtotal, 'invoice_date': invoice_date, 'invoice_number': invoice_id, 'invoice_print': invoice_print})
+    return render(request, 'payment_portal.html', {'booking': booking, 'customer': booking_cust, 'price_list': price_list, 'totals': totals, 'subtotal': subtotal, 'invoice_date': invoice_date, 'invoice_number': invoice_id, 'invoice_print': invoice_print})
+
 # ----------------------------------------------------------------Report Generation-------------------------------------------------------
-
-
-def generate_reports(request):
-    # Load bookings data from the JSON file
-    json_file_path = 'static/bookings.json'
-    with open(json_file_path, 'r') as booking_json:
-        bookings = json.load(booking_json)
-
-    # Get the selected report type from the form
-    report_type = request.POST.get('report_type', None)
-    # Define the strategy based on the selected report type
-    if report_type == 'daily':
-        strategy = DailyReportGenerator()
-    elif report_type == 'monthly':
-        selected_month = request.POST.get('selected_month', None)
-        strategy = MonthlyReportGenerator()
-    elif report_type == 'yearly':
-        selected_year = request.POST.get('selected_year', None)
-        strategy = YearlyReportGenerator()
-    else:
-        # Default to DailyReportGenerator if no or invalid report type is provided
-        strategy = DailyReportGenerator()
-    start_date = None
-    end_date = None
-    # Use the context to generate the report data
-    report_context = ReportContext(strategy)
-    report_data = report_context.generate_report_data(
-        bookings, start_date=start_date, end_date=end_date)
-
-    # Save the report data to a JSON file
-    save_report_to_json(report_data)
-
-    return render(request, 'reports.html', {'report_data': report_data})
 
 
 def save_report_to_json(report_data):
@@ -490,4 +500,52 @@ def save_report_to_json(report_data):
 
     # Save the report data to the JSON file
     with open(filename, 'w') as report_json:
-        json.dump(report_data, report_json)
+        json.dump(report_data, report_json, indent=2)
+
+def generate_reports(request):
+
+    json_file_path = 'static/bookings.json'
+    with open(json_file_path, 'r') as booking_json:
+        bookings = json.load(booking_json)
+    
+    report_type = request.POST.get('report_type', None)
+    print_colored(request.POST)
+    strategy = DailyReport() #default
+    if report_type == 'daily':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        report_context = ReportContext(strategy)
+        report_data, complete_booking_report_data = report_context.generate_report_data(
+            bookings, start_date, end_date)
+        
+    elif report_type == 'monthly':
+
+        selected_month = request.POST.get('selected_month', None)
+
+        strategy = MonthlyReport()
+        month = selected_month
+        print_colored(month, color=Color.GREEN)
+        report_context = ReportContext(strategy)
+        report_data, complete_booking_report_data = report_context.generate_report_data(
+            bookings, month)
+    elif report_type == 'yearly':
+ 
+        selected_year = request.POST.get('selected_year', None)
+     
+        strategy = YearlyReport()
+        year = selected_year
+        report_context = ReportContext(strategy)
+        report_data, complete_booking_report_data = report_context.generate_report_data(
+            bookings, year)
+    else:
+        start_date = None
+        end_date = None
+        report_context = ReportContext(strategy)
+        report_data, complete_booking_report_data = report_context.generate_report_data(
+            bookings, start_date, end_date)
+
+    print_colored(report_data, color=Color.RED)
+    save_report_to_json(complete_booking_report_data)
+    return render(request, 'reports.html', {'report_data': report_data})
+    
+    

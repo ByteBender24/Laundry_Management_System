@@ -7,6 +7,8 @@ import random
 import json
 import string
 from colorcode import Color, print_colored
+from typing import List, Dict
+import calendar
 
 def generate_customer_code(name, phone_number):
     name_prefix = re.sub(r'[^a-zA-Z]', '', name)[:3].upper()
@@ -16,6 +18,18 @@ def generate_customer_code(name, phone_number):
 
     return customer_code
 
+def generate_invoice_id(booking_id, customer_id):
+
+    invoice_id_base = f"IN{booking_id[:4]}-{customer_id[3:5]}-"
+    random_suffix = str(random.randint(1000, 9999))
+    invoice_id = f"{invoice_id_base}{random_suffix}"
+
+    return invoice_id
+
+def todate():
+    current_date = datetime.now()
+    formatted_date = current_date.strftime("%Y-%m-%d")
+    return formatted_date
 
 def free_machines():
     
@@ -207,7 +221,7 @@ class MachineManager:
         if not cls._instance:
             cls._instance = super(MachineManager, cls).__new__(cls)
             cls._instance.machines = cls._instance._load_machines()
-            cls._instance.observers = []
+            cls._instance.observers = [NotificationBar()]
         return cls._instance
 
     def add_machine(self, machine):
@@ -293,6 +307,7 @@ class MachineManager:
     
     # TODO does it automatically update notifications, when is_used is changed
 
+
 class NotificationObserver(ABC):
     @abstractmethod
     def update_notification(self, machine_id, is_used):
@@ -300,36 +315,38 @@ class NotificationObserver(ABC):
 
 
 class NotificationBar(NotificationObserver):
-    def __init__(self):
-        self.notifications = []
-        try:
-            with open('static/notifications.json', 'r') as file:
-                self.notifications = json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            self.notifications = []
+    _instance = None 
+
+    def __new__(cls):
+        if not cls._instance:
+            cls._instance = super(NotificationBar, cls).__new__(cls)
+            cls._instance._notifications = []
+            cls._instance._load_notifications()
+        return cls._instance
 
     def update_notification(self, machine_id, is_used):
-        notification = f"Machine ID {machine_id} is {'free' if is_used else 'not free'}"
-        self.notifications.append(notification)
+        notification = f"Machine ID {machine_id} is {'free' if not is_used else 'not free'}"
+        self._notifications.append(notification)
         self._save_notifications()
 
     def get_notifications(self):
-        return self.notifications
+        return self._notifications
 
     def clear_notifications(self):
-        self.notifications = []
+        self._notifications = []
         self._save_notifications()
 
     def _load_notifications(self):
         try:
             with open('static/notifications.json', 'r') as file:
-                self.notifications = json.load(file)
+                self._notifications = json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
-            self.notifications = []
+            self._notifications = []
 
     def _save_notifications(self):
         with open('static/notifications.json', 'w') as file:
-            json.dump(self.notifications, file, indent=2)
+            json.dump(self._notifications, file, indent=2)
+
 
 
 """
@@ -599,114 +616,134 @@ STRATEGY PATTERN
 """
 
 
-class ReportGeneratorStrategy:
-    def generate_report_data(self, bookings):
-        raise NotImplementedError(
-            "Subclasses must implement generate_report_data")
+class ReportStrategy(ABC):
+    @abstractmethod
+    def generate_report_data(self, data, **kwargs):
+        pass
 
 
-class DailyReportGenerator(ReportGeneratorStrategy):
-    def generate_report_data(self, bookings, start_date=None, end_date=None):
-        today = datetime.now().date()
-        if start_date is None:
-            start_date = today
-        if end_date is None:
-            end_date = today
-
-        # Convert dates to strings
-        start_date_str = start_date.strftime('%Y-%m-%d')
-        end_date_str = end_date.strftime('%Y-%m-%d')
-
-        filtered_bookings = [booking for booking in bookings if start_date <= datetime.strptime(
-            booking['booking_time'], '%Y-%m-%d %H:%M:%S').date() <= end_date]
-
-        total_bookings = len(filtered_bookings)
-        total_cost = sum(booking['total_cost']
-                         for booking in filtered_bookings)
-
-        return {
-            'report_type': 'Daily',
-            'start_date': start_date_str,
-            'end_date': end_date_str,
-            'total_bookings': total_bookings,
-            'total_cost': total_cost,
-        }
-
-
-class MonthlyReportGenerator(ReportGeneratorStrategy):
-    def generate_report_data(self, bookings, start_date=None, end_date=None):
+class DailyReport(ReportStrategy):
+    def generate_report_data(self, data, start_date=None, end_date=None):
+        start_rem = start_date
+        end_rem = end_date
         today = datetime.now().date()
 
-        if start_date:
-            start_date = datetime.strptime(start_date, '%Y-%m').date()
+        if start_date is not None:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
         else:
-            start_date = today.replace(day=1)
+            start_date = datetime.combine(
+                today, datetime.min.time())  # Set time to midnight
 
-        if end_date:
-            end_date = datetime.strptime(end_date, '%Y-%m').date()
+        if end_date is not None:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            # Set time to 23:59:59.999999
+            end_date = datetime.combine(end_date, datetime.max.time())
         else:
-            end_date = (start_date + timedelta(days=32)
-                        ).replace(day=1) - timedelta(days=1)
+            # Set time to 23:59:59.999999
+            end_date = datetime.combine(today, datetime.max.time())
 
-        # Convert dates to strings
-        start_date_str = start_date.strftime('%Y-%m-%d')
-        end_date_str = end_date.strftime('%Y-%m-%d')
+        filtered_data = [booking for booking in data if start_date <= datetime.strptime(
+            booking['booking_time'], '%Y-%m-%d %H:%M:%S') <= end_date]
 
-        filtered_bookings = [booking for booking in bookings if start_date <= datetime.strptime(
-            booking['booking_time'], '%Y-%m-%d %H:%M:%S').date() <= end_date]
+        # Calculate total revenue
+        total_revenue = sum(booking['total_cost'] for booking in filtered_data)
 
-        total_bookings = len(filtered_bookings)
-        total_cost = sum(booking['total_cost']
-                         for booking in filtered_bookings)
+        # Calculate average cost per booking
+        average_cost = total_revenue / len(filtered_data) if len(filtered_data) > 0 else 0
 
-        return {
-            'report_type': 'Monthly',
-            'start_date': start_date_str,
-            'end_date': end_date_str,
-            'total_bookings': total_bookings,
-            'total_cost': total_cost,
+        # Number of bookings
+        num_bookings = len(filtered_data)
+
+        # Number of bookings with payment pending
+        num_pending_bookings = sum(1 for booking in filtered_data if not booking['payment_status'])
+
+        if start_rem is None:
+            start_rem = today.strftime('%d/%b/%Y')
+            end_rem = today.strftime('%d/%b/%Y')
+
+        # Create a dictionary to store the calculated values
+        report_data = {
+            'start_date' : start_rem,
+            'end_date' : end_rem,
+            'total_revenue': total_revenue,
+            'average_cost': average_cost,
+            'num_bookings': num_bookings,
+            'num_pending_bookings': num_pending_bookings
+        }
+        return (report_data, filtered_data)
+
+
+class MonthlyReport(ReportStrategy):
+    def generate_report_data(self, data, month):
+        year, month = map(int, month.split('-'))
+
+        filtered_data = [entry for entry in data if datetime.strptime(
+            entry['booking_time'], "%Y-%m-%d %H:%M:%S").year == year and
+            datetime.strptime(entry['booking_time'], "%Y-%m-%d %H:%M:%S").month == month]
+
+        # Calculate total revenue
+        total_revenue = sum(booking['total_cost'] for booking in filtered_data)
+
+        # Calculate average cost per booking
+        average_cost = total_revenue / \
+            len(filtered_data) if len(filtered_data) > 0 else 0
+
+        # Number of bookings
+        num_bookings = len(filtered_data)
+
+        # Number of bookings with payment pending
+        num_pending_bookings = sum(
+            1 for booking in filtered_data if not booking['payment_status'])
+
+        # Create a dictionary to store the calculated values
+        report_data = {
+            'month': calendar.month_name[month],
+            'total_revenue': total_revenue,
+            'average_cost': average_cost,
+            'num_bookings': num_bookings,
+            'num_pending_bookings': num_pending_bookings
         }
 
+        return (report_data, filtered_data)
 
-class YearlyReportGenerator(ReportGeneratorStrategy):
-    def generate_report_data(self, bookings, start_date=None, end_date=None):
-        today = datetime.now().date()
 
-        if start_date:
-            start_date = datetime.strptime(start_date, '%Y').date()
-        else:
-            start_date = today.replace(month=1, day=1)
+class YearlyReport(ReportStrategy):
+    def generate_report_data(self, data, year):
+        year = int(year)
 
-        if end_date:
-            end_date = datetime.strptime(end_date, '%Y').date()
-        else:
-            end_date = today.replace(month=12, day=31)
+        filtered_data = [entry for entry in data if datetime.strptime(
+            entry['booking_time'], "%Y-%m-%d %H:%M:%S").year == year]
 
-        # Convert dates to strings
-        start_date_str = start_date.strftime('%Y-%m-%d')
-        end_date_str = end_date.strftime('%Y-%m-%d')
+        # Calculate total revenue
+        total_revenue = sum(booking['total_cost'] for booking in filtered_data)
 
-        filtered_bookings = [booking for booking in bookings if start_date <= datetime.strptime(
-            booking['booking_time'], '%Y-%m-%d %H:%M:%S').date() <= end_date]
+        # Calculate average cost per booking
+        average_cost = total_revenue / \
+            len(filtered_data) if len(filtered_data) > 0 else 0
 
-        total_bookings = len(filtered_bookings)
-        total_cost = sum(booking['total_cost']
-                         for booking in filtered_bookings)
+        # Number of bookings
+        num_bookings = len(filtered_data)
 
-        return {
-            'report_type': 'Yearly',
-            'start_date': start_date_str,
-            'end_date': end_date_str,
-            'total_bookings': total_bookings,
-            'total_cost': total_cost,
+        # Number of bookings with payment pending
+        num_pending_bookings = sum(
+            1 for booking in filtered_data if not booking['payment_status'])
+
+        # Create a dictionary to store the calculated values
+        report_data = {
+            'year' : year,
+            'total_revenue': total_revenue,
+            'average_cost': average_cost,
+            'num_bookings': num_bookings,
+            'num_pending_bookings': num_pending_bookings
         }
 
-# context class that will use the strategy
+        return (report_data, filtered_data)
+
+
+# Context class that will use the strategy
 class ReportContext:
     def __init__(self, strategy):
         self.strategy = strategy
 
-    def generate_report_data(self, bookings, **kwargs):
-        return self.strategy.generate_report_data(bookings, **kwargs)
-
-
+    def generate_report_data(self, *args, **kwargs):
+        return self.strategy.generate_report_data(*args, **kwargs)

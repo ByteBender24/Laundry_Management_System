@@ -26,5 +26,19 @@
     "phone_number": "9933223344",
     "email": "pranesh@gmail.com",
     "status": "PREMIUM"
+  },
+  {
+    "id": "HAR402902",
+    "name": "Harishraj Selvakumar",
+    "phone_number": "9944718902",
+    "email": "harishrajselva@gmail.com",
+    "status": "PREMIUM"
+  },
+  {
+    "id": "ANI395201",
+    "name": "Anish",
+    "phone_number": "9239029201",
+    "email": "anish@gmail.com",
+    "status": "PREMIUM"
   }
 ]

@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Add Tailwind CSS link -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        .bg-light-pink {
+            background-color: #f1eaeb;
+        }
+
+        body {
+            margin-bottom: 50px;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
@@ -49,13 +58,20 @@
         {% if bookings %}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {% for booking in bookings %}
+            {% if not booking.payment_status %} 
             <div class="bg-white p-4 rounded-md shadow-md">
+            {% else %} 
+            <div class="bg-light-pink p-4 rounded-md shadow-md">
+            {% endif %}
+            
                 <p class="text-sm font-semibold mb-2">Booking ID: {{ booking.booking_id }}</p>
                 <p class="text-sm mb-2">Customer ID: {{ booking.customer_id }}</p>
                 <p class="text-sm mb-2">Total Cost: {{ booking.total_cost }}</p>
                 <p class="text-sm">Payment Status: {% if booking.payment_status %} "Paid" {% else %} "Pending" {% endif %}</p>
                 <a href="{% url 'update_booking' booking.booking_id %}" class="btn btn-primary mt-2">Update</a>
                 <a href="{% url 'payment_portal' booking.booking_id %}"> <button type="button" class="btn btn-success mt-2">Payment</button></a>
+                {% if booking.payment_status %} <a href="{% url 'invoice' booking.booking_id %}"> <button type="button" class="btn btn-secondary mt-2">Invoice</button></a> {% endif %}
+                
             </div>
             {% endfor %}
         </div>

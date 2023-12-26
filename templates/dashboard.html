@@ -1,23 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laundry Service Dashboard</title>
     <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #eff2f7; /* Updated background color */
+            background-color: #eff2f7;
+            /* Updated background color */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
         nav {
-            background-color: #3498db; /* Updated background color */
+            background-color: #3498db;
+            /* Updated background color */
             padding: 10px;
             text-align: center;
         }
@@ -31,15 +34,18 @@
 
         .container {
             display: flex;
-            justify-content: center; /* Center the boxes */
+            justify-content: center;
+            /* Center the boxes */
             flex-wrap: wrap;
             margin: 20px;
             margin-left: 120px;
         }
 
         .box {
-            background-color: #ffffff; /* Updated background color */
-            border: 1px solid #d3e0ea; /* Updated border color */
+            background-color: #ffffff;
+            /* Updated background color */
+            border: 1px solid #d3e0ea;
+            /* Updated border color */
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -48,15 +54,54 @@
         }
 
         footer {
-            background-color: #3498db; /* Updated background color for footer */
+            background-color: #3498db;
+            /* Updated background color for footer */
             color: white;
             text-align: center;
             padding: 10px;
             width: 100%;
-            margin-top: auto; /* Push the footer to the bottom */
+            margin-top: auto;
+            /* Push the footer to the bottom */
         }
+
+        .notification-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            color: rgb(16, 16, 16);
+            font-size: 24px;
+            margin-top: 40px;
+        }
+
+        .notification:hover {
+        transform: translateX(-30px);
+    }
+
+        .notification {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .notification button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        display: none;
+        transition: transform 0.3s ease;
+    }
+
+    .notification:hover button {
+        display: block;
+        transform: translateX(-30px);
+    }
+
     </style>
 </head>
+
 <body>
 
 
@@ -66,6 +111,42 @@
         <a class="navbar-brand" href="{% url 'view_bookings' %}">Bookings</a>
         <a class="navbar-brand" href="{% url 'generate_reports' %}">Reports</a>
     </nav>
+    <!--FIXME fix this alignment and make it alingned with observer pattern -->
+
+    {% if messages %}
+    <div class="notification-icon" data-bs-toggle="modal" data-bs-target="#notificationModal">
+        <i class="fas fa-bell"></i>
+
+        <span class="badge bg-danger">{{ messages|length }}</span>
+
+    </div>
+    {% endif %}
+
+    <!-- Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for msg in messages %}
+                    <div class="notification">
+                        <p>{{ msg }}</p>
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeNotification(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
@@ -74,6 +155,7 @@
             <a class="btn btn-primary" href="{% url 'create_customer' %}">Create Customer</a>
             <a class="btn btn-primary" href="{% url 'customer_list' %}">View Customers</a>
         </div>
+
 
         <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
             <h2 class="text-primary">Machines</h2>
@@ -105,7 +187,19 @@
     <script>
         alert("{{ customer_msg|safe }}");
     </script>
-{% endif %}
+    {% endif %}
+
+    <script>
+    function removeNotification(button) {
+        // Get the parent notification div
+        var notification = button.parentNode;
+
+        // Remove the notification from the DOM
+        notification.parentNode.removeChild(notification);
+    }
+</script>
+
 
 </body>
+
 </html>

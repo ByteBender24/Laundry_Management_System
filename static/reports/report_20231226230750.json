@@ -1,0 +1,24 @@
+[
+  {
+    "booking_id": "B2",
+    "customer_id": "C2",
+    "dry_quantity": 3,
+    "clothes_quantity": 1,
+    "shoes_quantity": 2,
+    "bags_quantity": 2,
+    "total_cost": 50,
+    "payment_status": false,
+    "booking_time": "2023-12-26 14:45:00"
+  },
+  {
+    "booking_id": "HA7551",
+    "customer_id": "HAR402902",
+    "dry_quantity": 7,
+    "clothes_quantity": 5,
+    "shoes_quantity": 4,
+    "bags_quantity": 6,
+    "total_cost": 176.4,
+    "payment_status": true,
+    "booking_time": "2023-12-26 21:23:01"
+  }
+]

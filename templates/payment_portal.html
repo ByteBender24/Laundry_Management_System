@@ -70,12 +70,18 @@
                 display: none;
                 /* Hide the "Pay" button when printing */
             }
+
+            .btn {
+                display : none;
+            }
         }
     </style>
 </head>
 
-<body>
-
+<body>  
+    <button class="btn btn-secondary">
+            <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </button>
     <div class="invoice-container">
         <div class="invoice-header text-center">
             <h2>The Laundromen Company</h2>
@@ -149,7 +155,10 @@
             <p><strong>BALANCE DUE:</strong> <span id="balanceDue"> ₹{{ booking.total_cost }}</span></p>
         </div>
     </div>
-
+    {% if not invoice_print %}
+            <button type="button" onclick="printInvoice()" class="btn btn-warning mt-3">Print Invoice</button>
+    {% endif%}
+    {% if invoice_print %}
     <!-- Add this inside the <body> tag of your HTML -->
     <div class="payment-container">
         
@@ -212,110 +221,82 @@
             <button type="submit" class="btn btn-primary mt-3">Pay</button>
         </form>
     </div>
-
+    {% endif %}
     <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 
+<!-- Add this script at the end of your body tag -->
 <script>
-    // Add this script at the end of your body tag
-    document.addEventListener('DOMContentLoaded', function () {
-        const discountInput = document.getElementById('discount');
-        const totalElement = document.getElementById('total');
-        const balanceDueElement = document.getElementById('balanceDue');
-        const cardPaymentForm = document.getElementById('cardPaymentForm');
-        const cashPaymentForm = document.getElementById('cashPaymentForm');
-        const cardPaymentRadio = document.getElementById('cardPayment');
-        const cashPaymentRadio = document.getElementById('cashPayment');
-        const payButton = document.getElementById('payButton');
-        const cardNumberInput = document.getElementById('cardNumber');
-        const expiryDateInput = document.getElementById('expiryDate');
+    const discountInput = document.getElementById('discount');
+    const totalElement = document.getElementById('total');
+    const balanceDueElement = document.getElementById('balanceDue');
+    const cardPaymentForm = document.getElementById('cardPaymentForm');
+    const cashPaymentForm = document.getElementById('cashPaymentForm');
+    const cardPaymentRadio = document.getElementById('cardPayment');
+    const cashPaymentRadio = document.getElementById('cashPayment');
+    const payButton = document.getElementById('payButton');
+    const cardNumberInput = document.getElementById('cardNumber');
+    const expiryDateInput = document.getElementById('expiryDate');
 
-        // Function to update total and balance due elements
-        function updateTotalAndBalance() {
-            const discountValue = parseFloat(discountInput.value) || 0;
-            const discountedTotal = (1 - discountValue / 100) * {{ booking.total_cost }};
-            totalElement.textContent = `₹${discountedTotal.toFixed(2)}`;
-            balanceDueElement.textContent = `₹${discountedTotal.toFixed(2)}`;
-        }
+    // Function to update total and balance due elements
+    function updateTotalAndBalance() {
+        const discountValue = parseFloat(discountInput.value) || 0;
+        const discountedTotal = (1 - discountValue / 100) * {{ booking.total_cost }};
+        totalElement.textContent = `₹${discountedTotal.toFixed(2)}`;
+        balanceDueElement.textContent = `₹${discountedTotal.toFixed(2)}`;
+    }
 
-        // Function to dynamically format credit card number with spaces
-        function dynamicallyFormatCreditCardNumber() {
-            let formattedValue = formatCreditCardNumber(cardNumberInput.value);
-            cardNumberInput.value = formattedValue;
-        }
+    // Function to dynamically format credit card number with spaces
+    function dynamicallyFormatCreditCardNumber() {
+        let formattedValue = formatCreditCardNumber(cardNumberInput.value);
+        cardNumberInput.value = formattedValue;
+    }
 
-        // Function to dynamically format expiry date with '/'
-        function dynamicallyFormatExpiryDate() {
-            let formattedValue = formatExpiryDate(expiryDateInput.value);
-            expiryDateInput.value = formattedValue;
-        }
+    // Function to dynamically format expiry date with '/'
+    function dynamicallyFormatExpiryDate() {
+        let formattedValue = formatExpiryDate(expiryDateInput.value);
+        expiryDateInput.value = formattedValue;
+    }
 
-        // Function to format credit card number with spaces
-        function formatCreditCardNumber(value) {
-            // Remove non-numeric characters
-            const numericValue = value.replace(/\D/g, '');
-            
-            // Add spaces after every 4 digits (if total digits are less than or equal to 16)
-            if (numericValue.length <= 16) {
-                return numericValue.replace(/(\d{4})/g, '$1 ').trim();
-            } else {
-                // If more than 16 digits, only consider the first 16 digits
-                return numericValue.slice(0, 16).replace(/(\d{4})/g, '$1 ').trim();
-            }
-        }
+    // Show/hide payment forms based on selected payment method
+    cardPaymentRadio.addEventListener('change', function () {
+        cardPaymentForm.style.display = 'block';
+        cashPaymentForm.style.display = 'none';
+        updateTotalAndBalance();
+    });
 
-        // Function to format expiry date with '/'
-        function formatExpiryDate(value) {
-            // Remove non-numeric characters
-            const numericValue = value.replace(/\D/g, '');
+    cashPaymentRadio.addEventListener('change', function () {
+        cardPaymentForm.style.display = 'none';
+        cashPaymentForm.style.display = 'block';
+        updateTotalAndBalance();
+    });
 
-            // Add '/' after the first 2 digits (if total digits are less than or equal to 4)
-            if (numericValue.length <= 4) {
-                return numericValue.replace(/(\d{2})/, '$1/').trim();
-            } else {
-                // If more than 4 digits, only consider the first 4 digits
-                return numericValue.slice(0, 4).replace(/(\d{2})/, '$1/').trim();
-            }
-        }
+    // Handle discount input change
+    discountInput.addEventListener('input', function () {
+        updateTotalAndBalance();
+    });
 
-        // Show/hide payment forms based on selected payment method
-        cardPaymentRadio.addEventListener('change', function () {
-            cardPaymentForm.style.display = 'block';
-            cashPaymentForm.style.display = 'none';
-            updateTotalAndBalance();
-        });
+    // Handle credit card number input dynamically
+    cardNumberInput.addEventListener('input', dynamicallyFormatCreditCardNumber);
 
-        cashPaymentRadio.addEventListener('change', function () {
-            cardPaymentForm.style.display = 'none';
-            cashPaymentForm.style.display = 'block';
-            updateTotalAndBalance();
-        });
+    // Handle expiry date input dynamically
+    expiryDateInput.addEventListener('input', dynamicallyFormatExpiryDate);
 
-        // Handle Pay button click
-        payButton.addEventListener('click', function () {
-            // Perform any other actions you need here
-            printInvoice();
-        });
+    // Handle Print Invoice button click
+    function printInvoice() {
+        window.print();
+    }
 
-        // Handle discount input change
-        discountInput.addEventListener('input', function () {
-            updateTotalAndBalance();
-        });
-
-        // Handle credit card number input dynamically
-        cardNumberInput.addEventListener('input', dynamicallyFormatCreditCardNumber);
-
-        // Handle expiry date input dynamically
-        expiryDateInput.addEventListener('input', dynamicallyFormatExpiryDate);
-
-        function printInvoice() {
-            window.print();
-        }
+    // If using a button, you can use this event listener
+    payButton.addEventListener('click', function () {
+        // Perform any other actions you need here
+        printInvoice();
     });
 </script>
+
 
 
 </body>
