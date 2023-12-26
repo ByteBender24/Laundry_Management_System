@@ -1,0 +1,161 @@
+<!-- templates/reports.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <title>Reports</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-section {
+            margin-bottom: 30px;
+        }
+
+        .report-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .report-info {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .report-data {
+            font-size: 1.2rem;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .no-data {
+            font-style: italic;
+            color: #888;
+        }
+
+        /* Add your custom styles here */
+
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">Laundry Service</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'customer_list' %}">Customers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'machine_list' %}">Machines</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'view_bookings' %}">Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'generate_reports' %}">Reports</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="report-section">
+            <div class="report-header">Daily Report</div>
+            <form action="{% url 'generate_reports' %}" method="post">
+                {% csrf_token %}
+                <label for="dailyStartDate">Start Date:</label>
+                <input type="date" id="dailyStartDate" name="start_date" required>
+                <label for="dailyEndDate">End Date:</label>
+                <input type="date" id="dailyEndDate" name="end_date" required>
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </form>
+            {% if daily_report %}
+                <div class="report-info">
+                    <p>Start Date: {{ daily_report.start_date }}</p>
+                    <p>End Date: {{ daily_report.end_date }}</p>
+                </div>
+                <div class="report-data">
+                    <p>Total Bookings: {{ daily_report.total_bookings }}</p>
+                    <p>Total Cost: {{ daily_report.total_cost }}</p>
+                </div>
+            {% else %}
+                <p class="no-data">No data available for the selected period.</p>
+            {% endif %}
+        </div>
+
+        <div class="report-section">
+            <div class="report-header">Monthly Report</div>
+            <form action="{% url 'generate_reports' %}" method="post">
+                {% csrf_token %}
+                <label for="monthlyDate">Select Month:</label>
+                <input type="month" id="monthlyDate" name="selected_month" required>
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </form>
+            {% if monthly_report %}
+                <div class="report-info">
+                    <p>Month: {{ monthly_report.start_date }}</p>
+                </div>
+                <div class="report-data">
+                    <p>Total Bookings: {{ monthly_report.total_bookings }}</p>
+                    <p>Total Cost: {{ monthly_report.total_cost }}</p>
+                </div>
+            {% else %}
+                <p class="no-data">No data available for the selected period.</p>
+            {% endif %}
+        </div>
+
+        <div class="report-section">
+            <div class="report-header">Yearly Report</div>
+            <form action="{% url 'generate_reports' %}" method="post">
+                {% csrf_token %}
+                <label for="yearlyYear">Select Year:</label>
+                <input type="number" id="yearlyYear" name="selected_year" min="1900" max="2100" required>
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </form>
+            {% if yearly_report %}
+                <div class="report-info">
+                    <p>Year: {{ yearly_report.start_date }}</p>
+                </div>
+                <div class="report-data">
+                    <p>Total Bookings: {{ yearly_report.total_bookings }}</p>
+                    <p>Total Cost: {{ yearly_report.total_cost }}</p>
+                </div>
+            {% else %}
+                <p class="no-data">No data available for the selected period.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js for dropdowns (if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

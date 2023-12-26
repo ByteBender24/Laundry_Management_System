@@ -1,0 +1,30 @@
+[
+  {
+    "id": "HAR862902",
+    "name": "Harishraj",
+    "phone_number": "9944718902",
+    "email": "harishrajselva@gmail.com",
+    "status": "BASIC"
+  },
+  {
+    "id": "VAR562909",
+    "name": "Varsha",
+    "phone_number": "9944188909",
+    "email": "varsha@gmail.com",
+    "status": "PREMIUM"
+  },
+  {
+    "id": "LEW571833",
+    "name": "Lewin",
+    "phone_number": "8823238833",
+    "email": "lewinjesus@gmail.com",
+    "status": "BASIC"
+  },
+  {
+    "id": "PRA441344",
+    "name": "Pranesh",
+    "phone_number": "9933223344",
+    "email": "pranesh@gmail.com",
+    "status": "PREMIUM"
+  }
+]

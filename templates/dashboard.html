@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Service Dashboard</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #eff2f7; /* Updated background color */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        nav {
+            background-color: #3498db; /* Updated background color */
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center; /* Center the boxes */
+            flex-wrap: wrap;
+            margin: 20px;
+            margin-left: 120px;
+        }
+
+        .box {
+            background-color: #ffffff; /* Updated background color */
+            border: 1px solid #d3e0ea; /* Updated border color */
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #3498db; /* Updated background color for footer */
+            color: white;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: auto; /* Push the footer to the bottom */
+        }
+    </style>
+</head>
+<body>
+
+
+    <nav class="navbar navbar-dark bg-primary"> <!-- Use Bootstrap CSS for background color -->
+        <a class="navbar-brand" href="{% url 'customer_list' %}">Customers</a>
+        <a class="navbar-brand" href="{% url 'machine_list' %}">Machines</a>
+        <a class="navbar-brand" href="{% url 'view_bookings' %}">Bookings</a>
+        <a class="navbar-brand" href="{% url 'generate_reports' %}">Reports</a>
+    </nav>
+
+    <div class="container">
+        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
+            <h2 class="text-primary">Customers</h2> <!-- Use Bootstrap CSS for text color -->
+            <p>Manage customer details</p>
+            <a class="btn btn-primary" href="{% url 'create_customer' %}">Create Customer</a>
+            <a class="btn btn-primary" href="{% url 'customer_list' %}">View Customers</a>
+        </div>
+
+        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
+            <h2 class="text-primary">Machines</h2>
+            <p>View and manage washing machines</p>
+            <a class="btn btn-primary" href="{% url 'machine_list' %}">View Machines</a>
+        </div>
+
+        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
+            <h2 class="text-primary">Bookings</h2>
+            <p>Manage laundry bookings</p>
+            <a class="btn btn-primary" href="{% url 'view_bookings' %}">Booking</a>
+        </div>
+
+        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
+            <h2 class="text-primary">Reports</h2>
+            <p>Generate and view reports</p>
+            <a class="btn btn-primary" href="{% url 'generate_reports' %}">Generate Reports</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="navbar navbar-dark bg-primary d-flex justify-content-center align-items-center">
+        <p class="text-white">&copy; 2023 Laundry Service Dashboard</p>
+    </footer>
+
+    <!-- Add Bootstrap JS and Popper.js for dropdowns (if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% if customer_msg %}
+    <script>
+        alert("{{ customer_msg|safe }}");
+    </script>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+    <title>View Customers</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px; /* Increase the max-width as needed */
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #customers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #customers-table th,
+        #customers-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #search-bar {
+            float: right;
+            margin-bottom: 20px;
+        }
+
+        #customers-table td:nth-child(2) {
+            width: 200px; /* Adjust the width as needed */
+        }
+
+        .back-to-dashboard {
+            text-align: center;
+            margin-top: 10px;
+            color: #fff;
+            position: relative;
+            /* Set position relative */
+            top: 20px;
+            /* Adjust the top value as needed */
+        }
+
+        .back-to-dashboard a {
+    display: inline-block;
+    padding: 10px;
+    color: #fff; /* Set text color to white */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.back-to-dashboard a:hover {
+    background-color: #2779bd;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">Laundry Service</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'customer_list' %}">Customers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'machine_list' %}">Machines</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'view_bookings' %}">Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'generate_reports' %}">Reports</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-2xl font-semibold mb-6">View Customers</h2>
+
+        <!-- Search Bar -->
+        <input type="text" id="search-bar" placeholder="Search by name..." class="p-2 border rounded-md" />
+        
+        <!-- Customer Table -->
+        <table id="customers-table" class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.id }}</td>
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.phone_number }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.status }}</td>
+                        <td><a href="{% url 'update_customer_details' customer.id %}" class="btn btn-primary btn-sm">Update</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="back-to-dashboard">
+        <button class="btn btn-secondary">
+            <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+        </button>
+    </div>
+
+    <script>
+    // Search bar input event listener
+    document.getElementById('search-bar').addEventListener('input', updateTable);
+
+    // Function to update the table based on the search input
+    function updateTable() {
+        const searchInput = document.getElementById('search-bar').value.toLowerCase();
+        const tableRows = document.querySelectorAll('#customers-table tbody tr');
+
+        // Iterate through table rows and show/hide based on search input
+        tableRows.forEach(row => {
+            const nameColumn = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            row.style.display = nameColumn.startsWith(searchInput) ? '' : 'none';
+        });
+    }
+    </script>
+
+    {% if customer_msg %}
+    <script>
+        alert("{{ customer_msg|safe }}");
+    </script>
+    {% endif %}
+    
+    <!-- Add Bootstrap JS and Popper.js for dropdowns (if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

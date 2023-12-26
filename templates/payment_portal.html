@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Add your custom styles here */
+
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        .invoice-header,
+        .invoice-body,
+        .invoice-footer {
+            margin-bottom: 20px;
+        }
+
+        .invoice-header h2 {
+            color: #333;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #ccc;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+        .invoice-footer {
+            text-align: right;
+        }
+
+        #discount {
+            width: 40px;
+            /* Adjust the width as needed */
+        }
+
+        @media print {
+            .payment-container {
+                display: none;
+                /* Hide payment details when printing */
+            }
+
+            #payButton {
+                display: none;
+                /* Hide the "Pay" button when printing */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="invoice-container">
+        <div class="invoice-header text-center">
+            <h2>The Laundromen Company</h2>
+            <h4>INVOICE</h4>
+            <h5>Invoice Number: {{ invoice_number }}</h5>
+            <h5>Invoice Date: {{ invoice_date }}</h5>
+        </div>
+
+        <div class="invoice-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>BILL TO</h5>
+                    <p>{{ customer.name }} ({{ customer.status.capitalize }} customer) <br>
+                        Address<br>
+                        {{ customer.phone_number }}<br>
+                        {{ customer.email }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>SHIP TO</h5>
+                    <p>{{ customer.name }}<br>
+                        Address<br>
+                        {{ customer.phone_number }}</p>
+                </div>
+            </div>
+
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>QTY</th>
+                        <th>UNIT PRICE</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dry Cleaning</td>
+                        <td>{{ booking.dry_quantity }}</td>
+                        <td>{{ price_list.dry_cleaning}}</td>
+                        <td>{{ totals.dry_cleaning}}</td>
+                    </tr>
+                    <tr>
+                        <td>Clothes</td>
+                        <td>{{ booking.clothes_quantity }}</td>
+                        <td>{{ price_list.clothes}}</td>
+                        <td>{{ totals.clothes}}</td>
+                    </tr>
+                    <tr>
+                        <td>Shoes</td>
+                        <td>{{ booking.shoes_quantity }}</td>
+                        <td>{{ price_list.shoes}}</td>
+                        <td>{{ totals.shoes}}</td>
+                    </tr>
+                    <tr>
+                        <td>Bags</td>
+                        <td>{{ booking.bags_quantity }}</td>
+                        <td>{{ price_list.bags}}</td>
+                        <td>{{ totals.bags}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <form id="paymentForm" action="{% url 'handle_payment' booking.booking_id %}" method="post">
+            {% csrf_token %}
+        <div class="invoice-footer">
+            <p><strong>SUBTOTAL:</strong> ₹{{ booking.total_cost }}</p>
+            <p><strong>DISCOUNT:</strong> <input type="number" id="discount" name="discount" value="0" min="0"
+                    max="20">%</p>
+            <p><strong>TOTAL:</strong> <span id="total">₹{{ booking.total_cost }} </span></p>
+            <p><strong>BALANCE DUE:</strong> <span id="balanceDue"> ₹{{ booking.total_cost }}</span></p>
+        </div>
+    </div>
+
+    <!-- Add this inside the <body> tag of your HTML -->
+    <div class="payment-container">
+        
+            <h2 class="mt-4">Payment Details</h2>
+
+            <div class="mt-4">
+                <h5>Select Payment Method:</h5>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card"
+                        checked>
+                    <label class="form-check-label" for="cardPayment">Card Payment</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash">
+                    <label class="form-check-label" for="cashPayment">Cash Payment</label>
+                </div>
+            </div>
+
+            <div id="cardPaymentForm">
+                <!-- Card payment interface -->
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" class="form-control" id="cardNumber" name="cardNumber"
+                        placeholder="Enter card number" maxlength="19">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="expiryDate">Expiry Date</label>
+                        <input type="text" class="form-control" id="expiryDate" name="expiryDate" maxlength="5" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="cvv">CVV</label>
+                        <input type="password" class="form-control" id="cvv" name="cvv" placeholder="Enter CVV"
+                            maxlength="3">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pin">PIN Number</label>
+                    <input type="password" class="form-control" id="pin" name="pin" placeholder="Enter PIN"
+                        maxlength="4">
+                </div>
+
+                <div class="form-group">
+                    <label for="amountToPay">Amount to Pay</label>
+                    <input type="number" class="form-control" id="amountToPay" name="amountToPay"
+                        placeholder="Enter amount to pay" min="0">
+                </div>
+            </div>
+
+            <div id="cashPaymentForm" style="display: none;">
+                <!-- Cash payment interface -->
+                <div class="form-group">
+                    <label for="amountReceived">Amount Received</label>
+                    <input type="text" class="form-control" id="amountReceived" name="amountReceived"
+                        placeholder="Enter amount received">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Pay</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+<script>
+    // Add this script at the end of your body tag
+    document.addEventListener('DOMContentLoaded', function () {
+        const discountInput = document.getElementById('discount');
+        const totalElement = document.getElementById('total');
+        const balanceDueElement = document.getElementById('balanceDue');
+        const cardPaymentForm = document.getElementById('cardPaymentForm');
+        const cashPaymentForm = document.getElementById('cashPaymentForm');
+        const cardPaymentRadio = document.getElementById('cardPayment');
+        const cashPaymentRadio = document.getElementById('cashPayment');
+        const payButton = document.getElementById('payButton');
+        const cardNumberInput = document.getElementById('cardNumber');
+        const expiryDateInput = document.getElementById('expiryDate');
+
+        // Function to update total and balance due elements
+        function updateTotalAndBalance() {
+            const discountValue = parseFloat(discountInput.value) || 0;
+            const discountedTotal = (1 - discountValue / 100) * {{ booking.total_cost }};
+            totalElement.textContent = `₹${discountedTotal.toFixed(2)}`;
+            balanceDueElement.textContent = `₹${discountedTotal.toFixed(2)}`;
+        }
+
+        // Function to dynamically format credit card number with spaces
+        function dynamicallyFormatCreditCardNumber() {
+            let formattedValue = formatCreditCardNumber(cardNumberInput.value);
+            cardNumberInput.value = formattedValue;
+        }
+
+        // Function to dynamically format expiry date with '/'
+        function dynamicallyFormatExpiryDate() {
+            let formattedValue = formatExpiryDate(expiryDateInput.value);
+            expiryDateInput.value = formattedValue;
+        }
+
+        // Function to format credit card number with spaces
+        function formatCreditCardNumber(value) {
+            // Remove non-numeric characters
+            const numericValue = value.replace(/\D/g, '');
+            
+            // Add spaces after every 4 digits (if total digits are less than or equal to 16)
+            if (numericValue.length <= 16) {
+                return numericValue.replace(/(\d{4})/g, '$1 ').trim();
+            } else {
+                // If more than 16 digits, only consider the first 16 digits
+                return numericValue.slice(0, 16).replace(/(\d{4})/g, '$1 ').trim();
+            }
+        }
+
+        // Function to format expiry date with '/'
+        function formatExpiryDate(value) {
+            // Remove non-numeric characters
+            const numericValue = value.replace(/\D/g, '');
+
+            // Add '/' after the first 2 digits (if total digits are less than or equal to 4)
+            if (numericValue.length <= 4) {
+                return numericValue.replace(/(\d{2})/, '$1/').trim();
+            } else {
+                // If more than 4 digits, only consider the first 4 digits
+                return numericValue.slice(0, 4).replace(/(\d{2})/, '$1/').trim();
+            }
+        }
+
+        // Show/hide payment forms based on selected payment method
+        cardPaymentRadio.addEventListener('change', function () {
+            cardPaymentForm.style.display = 'block';
+            cashPaymentForm.style.display = 'none';
+            updateTotalAndBalance();
+        });
+
+        cashPaymentRadio.addEventListener('change', function () {
+            cardPaymentForm.style.display = 'none';
+            cashPaymentForm.style.display = 'block';
+            updateTotalAndBalance();
+        });
+
+        // Handle Pay button click
+        payButton.addEventListener('click', function () {
+            // Perform any other actions you need here
+            printInvoice();
+        });
+
+        // Handle discount input change
+        discountInput.addEventListener('input', function () {
+            updateTotalAndBalance();
+        });
+
+        // Handle credit card number input dynamically
+        cardNumberInput.addEventListener('input', dynamicallyFormatCreditCardNumber);
+
+        // Handle expiry date input dynamically
+        expiryDateInput.addEventListener('input', dynamicallyFormatExpiryDate);
+
+        function printInvoice() {
+            window.print();
+        }
+    });
+</script>
+
+
+</body>
+
+</html>
