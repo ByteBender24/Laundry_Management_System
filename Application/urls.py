@@ -17,7 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-
 urlpatterns = [
     path('', views.login , name='login'),
     path('dashboard/', views.dashboard, name='dashboard'),
@@ -35,4 +34,5 @@ urlpatterns = [
     path('payment_portal/<str:booking_id>', views.payment_portal, name="payment_portal"),
     path('handle_payment/<str:booking_id>',views.handle_payment, name="handle_payment"),
     path('invoice/<str:booking_id>', views.invoice_printer, name="invoice"),
+    path('main_page/' , views.main_page, name="main_page"),
 ]

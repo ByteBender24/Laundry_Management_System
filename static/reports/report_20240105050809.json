@@ -1,0 +1,13 @@
+[
+  {
+    "booking_id": "SU3366",
+    "customer_id": "SUG826890",
+    "dry_quantity": 7,
+    "clothes_quantity": 0,
+    "shoes_quantity": 3,
+    "bags_quantity": 0,
+    "total_cost": 85.0,
+    "payment_status": true,
+    "booking_time": "2024-01-05 05:07:21"
+  }
+]

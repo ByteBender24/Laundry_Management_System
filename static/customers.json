@@ -47,5 +47,40 @@
     "phone_number": "9944188232",
     "email": "danushg@gmail.com",
     "status": "BASIC"
+  },
+  {
+    "id": "KIS266627",
+    "name": "Kisshor",
+    "phone_number": "7397494627",
+    "email": "kisshorm@gmail.com",
+    "status": "PREMIUM"
+  },
+  {
+    "id": "RAN499890",
+    "name": "Ranjeev",
+    "phone_number": "1234567890",
+    "email": "ranjeev@gmail.com",
+    "status": "PREMIUM"
+  },
+  {
+    "id": "DHA331890",
+    "name": "Dhanush",
+    "phone_number": "1234567890",
+    "email": "danush@gmail.com",
+    "status": "BASIC"
+  },
+  {
+    "id": "HAY935890",
+    "name": "Hayden",
+    "phone_number": "1234567890",
+    "email": "hayden@gmail.com",
+    "status": "BASIC"
+  },
+  {
+    "id": "SUG826890",
+    "name": "Suguna",
+    "phone_number": "1234567890",
+    "email": "sugunaselva@gmail.com",
+    "status": "BASIC"
   }
 ]

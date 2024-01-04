@@ -17,6 +17,8 @@ def login(request):
         message = "Incorrect Credentials!"
         return render(request, 'login.html', {'messages': message})
 
+def main_page(request):
+    return render(request, 'home.html')
 
 def dashboard(request):
     with open(r'static\notifications.json', 'r') as f:
@@ -245,10 +247,10 @@ def create_booking(request):
         customer = get_customer_by_id(customer_id)
         if customer['status'].lower() == 'premium':
             payment_method_strategy = DiscountDecorator(
-                PremiumPaymentStrategy(), discount_percentage=10)
+                PremiumPaymentStrategy(), discount_percentage=0)
         else:
             payment_method_strategy = DiscountDecorator(
-                BasicPaymentStrategy(), discount_percentage=10)
+                BasicPaymentStrategy(), discount_percentage=0)
 
         booking = Booking(
             booking_id, customer_id, dry_quantity, clothes_quantity, shoes_quantity, bags_quantity, total_cost=0,
@@ -367,7 +369,8 @@ def payment_portal(request, booking_id):
     elif request.method == "POST":
         # Extract data from the form submission
         payment_method = request.POST.get('payment_method')
-
+        print_colored(request.POST , color=Color.RED)
+        discount = request.POST.get('discount')
         # Retrieve the booking from the booking manager
         booking = booking_manager.get_booking_by_id(booking_id)
 
@@ -392,7 +395,7 @@ def payment_portal(request, booking_id):
         # Update the booking in the booking manager
         booking_manager.update_booking(booking_id)
 
-        return JsonResponse({'success': True, 'message': 'Payment processed successfully'})
+        return JsonResponse({'success': True, 'message': 'in post of payment portal'})
 
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method'})
@@ -402,13 +405,16 @@ def handle_payment(request, booking_id):
     # Get the booking manager and booking details
     booking_manager = BookingManager()
     booking = booking_manager.get_booking_by_id(booking_id)
+    bookings = booking_manager.get_bookings()
     discount = int(request.POST.get('discount'))
+    print_colored(request.POST , color=Color.RED)
+
     if not booking:
-        return JsonResponse({'success': False, 'message': 'Booking not found'})
+        return render({'success': False, 'message': 'Booking not found'})
 
     # Check if the payment is already confirmed
     if booking['payment_status']:
-        return JsonResponse({'success': False, 'message': 'Payment already confirmed'})
+        return render(request, 'view_bookings.html', {'bookings': bookings, 'message': 'Payment already confirmed'})
 
     # Get the customer details
     customer_id = booking['customer_id']
@@ -425,7 +431,7 @@ def handle_payment(request, booking_id):
     # Confirm the payment
     booking['payment_status'] = True
     print_colored(payment_method_strategy.calculate_total_cost(
-        booking, price_list_return().get('price_rates')))
+        booking, price_list_return().get('price_rates')), color=Color.GREEN)
     booking['total_cost'] = payment_method_strategy.calculate_total_cost(
         booking, price_list_return().get('price_rates'))
     print_colored(booking)
@@ -454,7 +460,8 @@ def handle_payment(request, booking_id):
 
     print_colored(machine_manager.get_free_machines())
     # Return success response
-    return JsonResponse({'success': True, 'message': 'Payment confirmed successfully'})
+    return render(request, 'view_bookings.html', {'bookings': bookings, 'message': 'Payment Successfully confirmed'})
+
 
 def invoice_printer(request, booking_id):
     request.session['invoice_print'] = False

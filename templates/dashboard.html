@@ -1,3 +1,4 @@
+{% load static%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,119 +9,166 @@
     <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="static\assets/img/icon.png" rel="icon">
+
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #eff2f7;
-            /* Updated background color */
+            font-family: 'Roboto', sans-serif;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{% static "img/laundry1.jpg" %}');
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            z-index: -1;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            margin: 0; /* Reset margin to ensure full coverage */
         }
 
         nav {
-            background-color: #3498db;
-            /* Updated background color */
-            padding: 10px;
+            background-color: rgba(44, 62, 80, 0.7); /* Updated navbar background color with opacity */
+            padding: 0px;
             text-align: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1;
         }
 
         nav a {
             color: white;
             text-decoration: none;
-            padding: 10px;
+            padding: 0 10px;
             margin: 0 10px;
+            position: relative;
+        }
+
+        nav a:hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            bottom: 0;
+            left: 0;
+            animation: underline 0.3s ease;
+        }
+
+        @keyframes underline {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
         }
 
         .container {
-            display: flex;
-            justify-content: center;
-            /* Center the boxes */
-            flex-wrap: wrap;
-            margin: 20px;
-            margin-left: 120px;
-        }
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 80px auto; /* Increased margin-top for additional space */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
 
         .box {
-            background-color: #ffffff;
-            /* Updated background color */
-            border: 1px solid #d3e0ea;
-            /* Updated border color */
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin: 10px;
             text-align: center;
+            border-radius: 15px; /* Added border-radius for rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Added box-shadow for a subtle shadow effect */
+            background-color: rgba(255, 255, 255, 0.9); /* Updated box background color with opacity */
+        }
+
+        .box h2 {
+            color: #3498db;
+        }
+
+        .box p {
+            color: #7f8c8d;
+        }
+
+        .box a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .box a:hover {
+            text-decoration: none;
+        }
+
+        .box .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            color: white; /* Updated button text color to white */
         }
 
         footer {
-            background-color: #3498db;
-            /* Updated background color for footer */
+            background-color: rgba(44, 62, 80, 0.7); /* Updated footer background color with opacity */
             color: white;
             text-align: center;
             padding: 10px;
             width: 100%;
             margin-top: auto;
-            /* Push the footer to the bottom */
         }
 
         .notification-icon {
             position: fixed;
-            top: 20px;
+            top: 40px;
             right: 20px;
             cursor: pointer;
-            color: rgb(16, 16, 16);
+            color: rgb(255, 255, 255);
             font-size: 24px;
             margin-top: 40px;
         }
 
         .notification:hover {
-        transform: translateX(-30px);
-    }
+            transform: translateX(-5px);
+        }
 
         .notification {
-        border: 1px solid #ddd;
-        padding: 10px;
-        margin-bottom: 10px;
-        position: relative;
-        transition: transform 0.3s ease;
-        overflow: hidden; /* Hide overflow content */
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
 
-    }
+        .notification button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: none;
+            transition: transform 0.3s ease;
+        }
 
-    .notification button {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        display: none;
-        transition: transform 0.3s ease;
-    }
-
-    .notification:hover button {
-        display: block;
-        transform: translateX(-30px);
-    }
-
+        .notification:hover button {
+            display: block;
+            transform: translateX(-30px);
+        }
     </style>
 </head>
 
 <body>
 
+    <nav class="navbar navbar-dark bg-primary">
 
-    <nav class="navbar navbar-dark bg-primary"> <!-- Use Bootstrap CSS for background color -->
+        <nav class="navbar navbar-dark bg-primary">
+        <a class="navbar-brand" href="{% url 'main_page' %}">Home</a>
+        <a class="navbar-brand" href="{% url 'dashboard' %}">Dashboard</a>
         <a class="navbar-brand" href="{% url 'customer_list' %}">Customers</a>
         <a class="navbar-brand" href="{% url 'machine_list' %}">Machines</a>
         <a class="navbar-brand" href="{% url 'view_bookings' %}">Bookings</a>
         <a class="navbar-brand" href="{% url 'generate_reports' %}">Reports</a>
     </nav>
-    <!--FIXME fix this alignment and make it alingned with observer pattern -->
+    </nav>
 
     {% if messages %}
     <div class="notification-icon" data-bs-toggle="modal" data-bs-target="#notificationModal">
         <i class="fas fa-bell"></i>
-
         <span class="badge bg-danger">{{ messages|length }}</span>
-
     </div>
     {% endif %}
 
@@ -137,7 +185,8 @@
                     {% for msg in messages %}
                     <div class="notification">
                         <p>{{ msg }}</p>
-                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeNotification(this)">
+                        <button type="button" class="btn btn-outline-danger btn-sm"
+                            onclick="removeNotification(this)">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -151,35 +200,34 @@
     </div>
 
     <div class="container">
-        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
-            <h2 class="text-primary">Customers</h2> <!-- Use Bootstrap CSS for text color -->
+        <div class="box col-md-4">
+            <h2 class="text-primary"><i class="fas fa-users"></i> Customers</h2>
             <p>Manage customer details</p>
             <a class="btn btn-primary" href="{% url 'create_customer' %}">Create Customer</a>
             <a class="btn btn-primary" href="{% url 'customer_list' %}">View Customers</a>
         </div>
 
-
-        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
-            <h2 class="text-primary">Machines</h2>
+        <div class="box col-md-4">
+            <h2 class="text-primary"><i class="fa-solid fa-washing-machine"></i> Machines</h2>
             <p>View and manage washing machines</p>
             <a class="btn btn-primary" href="{% url 'machine_list' %}">View Machines</a>
         </div>
 
-        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
-            <h2 class="text-primary">Bookings</h2>
+        <div class="box col-md-4">
+            <h2 class="text-primary"><i class="fas fa-calendar-alt"></i> Bookings</h2>
             <p>Manage laundry bookings</p>
             <a class="btn btn-primary" href="{% url 'view_bookings' %}">Booking</a>
         </div>
 
-        <div class="box col-md-4"> <!-- Set box size to medium (col-md-4) -->
-            <h2 class="text-primary">Reports</h2>
+        <div class="box col-md-4">
+            <h2 class="text-primary"><i class="fas fa-chart-bar"></i> Reports</h2>
             <p>Generate and view reports</p>
             <a class="btn btn-primary" href="{% url 'generate_reports' %}">Generate Reports</a>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="navbar navbar-dark bg-primary d-flex justify-content-center align-items-center">
+    <footer>
         <p class="text-white">&copy; 2023 Laundry Service Dashboard</p>
     </footer>
 
@@ -192,15 +240,14 @@
     {% endif %}
 
     <script>
-    function removeNotification(button) {
-        // Get the parent notification div
-        var notification = button.parentNode;
+        function removeNotification(button) {
+            // Get the parent notification div
+            var notification = button.parentNode;
 
-        // Remove the notification from the DOM
-        notification.parentNode.removeChild(notification);
-    }
-</script>
-
+            // Remove the notification from the DOM
+            notification.parentNode.removeChild(notification);
+        }
+    </script>
 
 </body>
 

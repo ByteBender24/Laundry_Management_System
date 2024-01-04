@@ -1,0 +1,44 @@
+[
+  {
+    "name": "DM1",
+    "capacity": 5,
+    "is_used": false,
+    "machine_id": "DRY_CLEANING_DW2",
+    "type": "dry_cleaning"
+  },
+  {
+    "name": "DM2",
+    "capacity": 6,
+    "is_used": "DA1741",
+    "machine_id": "DRY_CLEANING_MJZ",
+    "type": "dry_cleaning"
+  },
+  {
+    "name": "DM3",
+    "capacity": 7,
+    "is_used": "HA8968",
+    "machine_id": "DRY_CLEANING_4T1",
+    "type": "dry_cleaning"
+  },
+  {
+    "name": "NM1",
+    "capacity": 9,
+    "is_used": "HA8968",
+    "machine_id": "NORMAL_N1V",
+    "type": "normal"
+  },
+  {
+    "name": "NM2",
+    "capacity": 9,
+    "is_used": false,
+    "machine_id": "NORMAL_IPV",
+    "type": "normal"
+  },
+  {
+    "name": "NM3",
+    "capacity": 8,
+    "is_used": false,
+    "machine_id": "NORMAL_QV7",
+    "type": "normal"
+  }
+]

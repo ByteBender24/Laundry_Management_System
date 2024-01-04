@@ -1,0 +1,8 @@
+{
+  "price_rates": {
+    "dry_cleaning": 10,
+    "clothes": 20,
+    "shoes": 5,
+    "bags": 1
+  }
+}
