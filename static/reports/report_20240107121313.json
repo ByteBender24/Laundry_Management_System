@@ -1,0 +1,13 @@
+[
+  {
+    "booking_id": "RA8531",
+    "customer_id": "RAN499890",
+    "dry_quantity": 4,
+    "clothes_quantity": 4,
+    "shoes_quantity": 0,
+    "bags_quantity": 0,
+    "total_cost": 108.0,
+    "payment_status": false,
+    "booking_time": "2024-01-07 12:11:36"
+  }
+]

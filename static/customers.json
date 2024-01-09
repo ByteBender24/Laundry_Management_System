@@ -82,5 +82,12 @@
     "phone_number": "1234567890",
     "email": "sugunaselva@gmail.com",
     "status": "BASIC"
+  },
+  {
+    "id": "SWE973890",
+    "name": "Sweety",
+    "phone_number": "1234567890",
+    "email": "sweety@gmail.com",
+    "status": "BASIC"
   }
 ]
