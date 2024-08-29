@@ -1,0 +1,13 @@
+[
+  {
+    "booking_id": "AC5320",
+    "customer_id": "ACH375891",
+    "dry_quantity": 3,
+    "clothes_quantity": 2,
+    "shoes_quantity": 2,
+    "bags_quantity": 0,
+    "total_cost": 76.0,
+    "payment_status": true,
+    "booking_time": "2024-08-29 18:30:06"
+  }
+]

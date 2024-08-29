@@ -89,5 +89,12 @@
     "phone_number": "1234567890",
     "email": "sweety@gmail.com",
     "status": "BASIC"
+  },
+  {
+    "id": "ACH784902",
+    "name": "Achu",
+    "phone_number": "9944718902",
+    "email": "achu@gmail.com",
+    "status": "BASIC"
   }
 ]

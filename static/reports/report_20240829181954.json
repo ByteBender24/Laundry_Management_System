@@ -1,0 +1,46 @@
+[
+  {
+    "booking_id": "SU3366",
+    "customer_id": "SUG826890",
+    "dry_quantity": 7,
+    "clothes_quantity": 0,
+    "shoes_quantity": 3,
+    "bags_quantity": 0,
+    "total_cost": 85.0,
+    "payment_status": true,
+    "booking_time": "2024-01-05 05:07:21"
+  },
+  {
+    "booking_id": "SU2321",
+    "customer_id": "SUG826890",
+    "dry_quantity": 4,
+    "clothes_quantity": 5,
+    "shoes_quantity": 0,
+    "bags_quantity": 0,
+    "total_cost": 140.0,
+    "payment_status": true,
+    "booking_time": "2024-01-05 05:08:44"
+  },
+  {
+    "booking_id": "RA8531",
+    "customer_id": "RAN499890",
+    "dry_quantity": 4,
+    "clothes_quantity": 4,
+    "shoes_quantity": 0,
+    "bags_quantity": 0,
+    "total_cost": 108.0,
+    "payment_status": true,
+    "booking_time": "2024-01-07 12:11:36"
+  },
+  {
+    "booking_id": "SW8556",
+    "customer_id": "SWE973890",
+    "dry_quantity": 0,
+    "clothes_quantity": 5,
+    "shoes_quantity": 6,
+    "bags_quantity": 6,
+    "total_cost": 111.52000000000001,
+    "payment_status": true,
+    "booking_time": "2024-01-09 16:06:26"
+  }
+]

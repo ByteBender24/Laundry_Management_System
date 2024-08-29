@@ -17,7 +17,7 @@
         "clothes_quantity": 1,
         "shoes_quantity": 2,
         "bags_quantity": 2,
-        "total_cost": 50,
+        "total_cost": 62,
         "payment_status": false,
         "booking_time": "2023-12-26 14:45:00"
     },
@@ -724,5 +724,38 @@
         "total_cost": 111.52000000000001,
         "payment_status": true,
         "booking_time": "2024-01-09 16:06:26"
+    },
+    {
+        "booking_id": "AC5320",
+        "customer_id": "ACH375891",
+        "dry_quantity": 3,
+        "clothes_quantity": 2,
+        "shoes_quantity": 2,
+        "bags_quantity": 0,
+        "total_cost": 76.0,
+        "payment_status": true,
+        "booking_time": "2024-08-29 18:30:06"
+    },
+    {
+        "booking_id": "AC9963",
+        "customer_id": "ACH135123",
+        "dry_quantity": 3,
+        "clothes_quantity": 3,
+        "shoes_quantity": 0,
+        "bags_quantity": 0,
+        "total_cost": 85.5,
+        "payment_status": true,
+        "booking_time": "2024-08-29 18:38:27"
+    },
+    {
+        "booking_id": "AC2372",
+        "customer_id": "ACH784902",
+        "dry_quantity": 2,
+        "clothes_quantity": 4,
+        "shoes_quantity": 0,
+        "bags_quantity": 0,
+        "total_cost": 95.0,
+        "payment_status": true,
+        "booking_time": "2024-08-29 18:47:59"
     }
 ]

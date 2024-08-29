@@ -5,6 +5,8 @@
 
 The Laundry Service Management System is a Web application developed for small-scale laundry service providers. It facilitates the management of customer details, bookings, machines, and financial transactions to streamline laundry service operations.
 
+[Watch this video](Laundry_Management_System.mp4)
+
 ## Features
 
 - **Login:**

@@ -8,13 +8,16 @@ import json
 import string
 from colorcode import Color, print_colored
 from typing import List, Dict
-import calendar
+import calendar, pyperclip
 
 def generate_customer_code(name, phone_number):
     name_prefix = re.sub(r'[^a-zA-Z]', '', name)[:3].upper()
     random_three_digits = str(random.randint(100, 999))
     last_three_digits = re.sub(r'[^0-9]', '', phone_number)[-3:]
     customer_code = f"{name_prefix}{random_three_digits}{last_three_digits}"
+
+    # Copy the customer code to clipboard
+    pyperclip.copy(customer_code)
 
     return customer_code
 
@@ -709,7 +712,10 @@ class MonthlyReport(ReportStrategy):
 
 class YearlyReport(ReportStrategy):
     def generate_report_data(self, data, year):
-        year = int(year)
+        if year:
+            year = int(year)
+        else:
+            year = 2024
 
         filtered_data = [entry for entry in data if datetime.strptime(
             entry['booking_time'], "%Y-%m-%d %H:%M:%S").year == year]
